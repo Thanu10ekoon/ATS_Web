@@ -1,0 +1,26 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "ATS Resume Checker Backend",
+  "dependencies": {
+    "@popperjs/core": "^2.11.8",
+    "bootstrap": "^5.3.6",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "multer": "^1.4.5-lts.1",
+    "natural": "^6.10.4",
+    "pdf-parse": "^1.1.1",
+    "react-bootstrap": "^2.10.10"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
