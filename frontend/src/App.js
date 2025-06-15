@@ -124,45 +124,119 @@ function App() {
                   </Col>
                 </Row>
 
-                <div className="mb-3">
-                  <h6 className="text-muted mb-2">Skills</h6>
-                  <div className="d-flex flex-wrap gap-2">
-                    {result.skills.map((skill, index) => (
-                      <Badge key={index} bg="secondary" className="px-3 py-2">
-                        {skill}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="mb-3">
+                {/* ATS Analysis (Updated for local processing) */}
+                <hr />
+                <h5 className="mb-3">ATS Analysis</h5>
+                
+                <div className="mb-4">
                   <h6 className="text-muted mb-2">ATS Score</h6>
-                  <div className="d-flex align-items-center gap-2">
-                    <h4 className={`mb-0 ${result.isATSFriendly ? 'text-success' : 'text-danger'}`}>
-                      {result.atsScore}/100
-                    </h4>
-                    <Badge bg={result.isATSFriendly ? 'success' : 'danger'} className="px-3 py-2">
-                      {result.isATSFriendly ? 'ATS Friendly' : 'Not ATS Friendly'}
-                    </Badge>
-                  </div>
+                  <Badge bg={result.ats_score >= 70 ? "success" : "danger"} className="px-3 py-2">
+                    {result.ats_score !== null ? `${result.ats_score}%` : 'N/A'}
+                  </Badge>
                 </div>
 
-                {result.issues.length > 0 && (
-                  <div>
-                    <h6 className="text-muted mb-2">Issues Found</h6>
-                    <div className="list-group">
+                <div className="mb-4">
+                  <h6 className="text-muted mb-2">ATS Friendly Status</h6>
+                  <Badge bg={result.is_ats_friendly ? "success" : "danger"} className="px-3 py-2">
+                    {result.is_ats_friendly ? 'ATS Friendly' : 'Not ATS Friendly'}
+                  </Badge>
+                </div>
+
+                {result.issues && result.issues.length > 0 && (
+                  <div className="mb-4">
+                    <h6 className="text-muted mb-2">Identified Issues</h6>
+                    <ul className="list-unstyled">
                       {result.issues.map((issue, index) => (
-                        <div
-                          key={index}
-                          className="list-group-item list-group-item-danger d-flex align-items-center"
-                        >
-                          <i className="bi bi-exclamation-triangle-fill me-2"></i>
+                        <li key={index} className="mb-2">
+                          <i className="bi bi-exclamation-triangle-fill text-danger me-2"></i>
                           {issue}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {/* Display other extracted information directly from result */}
+                <hr />
+                <h5 className="mb-3">Extracted Details</h5>
+
+                <div className="mb-4">
+                    <h6 className="text-muted mb-2">Contact Information</h6>
+                    <ul className="list-unstyled mb-0">
+                      {result.contact_info?.phone_numbers?.map((phone, index) => (
+                        <li key={index}><i className="bi bi-telephone-fill me-2"></i>{phone}</li>
+                      ))}
+                      {result.contact_info?.emails?.map((email, index) => (
+                        <li key={index}><i className="bi bi-envelope-fill me-2"></i>{email}</li>
+                      ))}
+                      {result.contact_info?.linkedin_url && (
+                        <li><i className="bi bi-linkedin me-2"></i><a href={result.contact_info.linkedin_url} target="_blank" rel="noopener noreferrer">LinkedIn Profile</a></li>
+                      )}
+                      {result.contact_info?.portfolio_url && (
+                        <li><i className="bi bi-box-arrow-up-right me-2"></i><a href={result.contact_info.portfolio_url} target="_blank" rel="noopener noreferrer">Portfolio</a></li>
+                      )}
+                    </ul>
+                </div>
+
+                <div className="mb-4">
+                    <h6 className="text-muted mb-2">Educational Details</h6>
+                    {result.education?.slice(0, 3).map((edu, index) => (
+                      <Card key={index} className="mb-2 p-2 bg-light">
+                        <p className="mb-0"><strong>Degree:</strong> {edu.degree || 'N/A'}</p>
+                        <p className="mb-0"><strong>Field:</strong> {edu.field_of_study || 'N/A'}</p>
+                        <p className="mb-0"><strong>Institution:</strong> {edu.institution || 'N/A'}</p>
+                        <p className="mb-0"><strong>Year:</strong> {edu.graduation_year || 'N/A'}</p>
+                      </Card>
+                    ))}
+                </div>
+
+                <div className="mb-4">
+                    <h6 className="text-muted mb-2">Experience Level</h6>
+                    <Badge bg="info" className="px-3 py-2">
+                      {result.experience_level || 'N/A'}
+                    </Badge>
+                </div>
+
+                <div className="mb-4">
+                    <h6 className="text-muted mb-2">Skills Analysis</h6>
+                    <Row>
+                      <Col md={6}>
+                        <h6>Technical Skills</h6>
+                        <div className="d-flex flex-wrap gap-2">
+                          {result.skills?.technical?.map((skill, index) => (
+                            <Badge key={index} bg="primary" className="px-3 py-2">
+                              {skill}
+                            </Badge>
+                          ))}
+                        </div>
+                      </Col>
+                      <Col md={6}>
+                        <h6>Soft Skills</h6>
+                        <div className="d-flex flex-wrap gap-2">
+                          {result.skills?.soft?.map((skill, index) => (
+                            <Badge key={index} bg="success" className="px-3 py-2">
+                              {skill}
+                            </Badge>
+                          ))}
+                        </div>
+                      </Col>
+                    </Row>
+                </div>
+
+                {result.recommendations && result.recommendations.length > 0 && (
+                  <div className="mb-4">
+                    <h6 className="text-muted mb-2">Recommendations</h6>
+                    <div className="list-group">
+                      {result.recommendations.map((rec, index) => (
+                        <div key={index} className="list-group-item">
+                          <i className="bi bi-lightbulb-fill text-warning me-2"></i>
+                          {rec}
                         </div>
                       ))}
                     </div>
                   </div>
                 )}
+                
               </Card.Body>
             </Card>
           </Col>
