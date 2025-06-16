@@ -7,6 +7,7 @@ const pdfParse = require('pdf-parse');
 const natural = require('natural');
 const tokenizer = new natural.WordTokenizer();
 const TfIdf = natural.TfIdf;
+const stemmer = natural.PorterStemmer;
 // const { GoogleGenerativeAI } = require('@google/generative-ai'); // No longer needed for AI parts
 
 const app = express();
@@ -327,11 +328,15 @@ function extractSkills(text) {
     // Check for technical skills
     for (const category in skillsCategories.technical) {
         for (const skill of skillsCategories.technical[category]) {
+            const stemmedSkill = stemmer.stem(skill.toLowerCase());
             if (skill.includes(' ')) {
+                // For multi-word skills, check if the phrase exists or if all stemmed words exist
                 if (text.toLowerCase().includes(skill.toLowerCase())) {
                     skills.technical.add(skill);
+                } else if (skill.split(' ').every(word => tokens.map(token => stemmer.stem(token)).includes(stemmer.stem(word)))) {
+                    skills.technical.add(skill);
                 }
-            } else if (tokens.includes(skill.toLowerCase())) {
+            } else if (tokens.map(token => stemmer.stem(token)).includes(stemmedSkill)) {
                 skills.technical.add(skill);
             }
         }
@@ -340,11 +345,15 @@ function extractSkills(text) {
     // Check for soft skills
     for (const category in skillsCategories.soft) {
         for (const skill of skillsCategories.soft[category]) {
+            const stemmedSkill = stemmer.stem(skill.toLowerCase());
             if (skill.includes(' ')) {
+                // For multi-word skills, check if the phrase exists or if all stemmed words exist
                 if (text.toLowerCase().includes(skill.toLowerCase())) {
                     skills.soft.add(skill);
+                } else if (skill.split(' ').every(word => tokens.map(token => stemmer.stem(token)).includes(stemmer.stem(word)))) {
+                    skills.soft.add(skill);
                 }
-            } else if (tokens.includes(skill.toLowerCase())) {
+            } else if (tokens.map(token => stemmer.stem(token)).includes(stemmedSkill)) {
                 skills.soft.add(skill);
             }
         }
