@@ -75,9 +75,7 @@ function App() {
       <div className="relative z-10 container mx-auto px-4 py-12 max-w-6xl">
         {/* Header Section */}
         <header className="text-center mb-12 animate-fade-in-down">
-          <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-white to-gray-100 rounded-2xl flex items-center justify-center shadow-2xl animate-bounce-slow">
-            <DocumentIcon />
-          </div>
+          
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 drop-shadow-lg">
             ATS Resume Checker
           </h1>
